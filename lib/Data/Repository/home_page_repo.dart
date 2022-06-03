@@ -1,30 +1,22 @@
-import 'package:api_exceptions_part2/Presentation/Screens/HomePage/UI/home_page.dart';
-import 'package:flutter/material.dart';
+import '../../Business_Logic/Exceptions/exception_handlers.dart';
+import '../API/base_client.dart';
+import '../Models/home_page_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class RouteGenerator {
-  Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
-    print(args.hashCode);
-    switch (settings.name) {
-      case '/':
-        return MaterialPageRoute(
-            builder: (_) => const MyHomePage(title: 'API & Exceptions'));
+abstract class DemoRepository {
+  Future<DemoModel> fetchData();
+}
 
-      default:
-        return _errorRoute();
-    }
-  }
-
-  static Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(builder: (_) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Error'),
-        ),
-        body: const Center(
-          child: Text('ERROR'),
-        ),
-      );
-    });
+class DemoRepo extends DemoRepository {
+  @override
+  Future<DemoModel> fetchData() async {
+   try{
+      final response =
+        await BaseClient().get('${(dotenv.env['API_BASE_URL'])}/todos/1');
+    return DemoModel.fromJson(response);
+   }
+   catch(e){
+     throw e.toString();
+   }
   }
 }
