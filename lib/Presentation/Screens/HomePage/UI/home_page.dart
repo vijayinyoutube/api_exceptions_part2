@@ -1,3 +1,4 @@
+import 'package:api_exceptions_part2/Data/Repository/home_page_repo.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -16,6 +17,21 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      body: Center(
+          child: ElevatedButton(
+        onPressed: () => getData(),
+        child: const Text('Fetch Data'),
+      )),
     );
+  }
+
+  Future<void> getData() async {
+    print('getting data');
+    try {
+      var response = await DemoRepo().fetchData();
+      print(response);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
