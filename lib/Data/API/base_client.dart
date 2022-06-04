@@ -1,9 +1,9 @@
 import 'dart:async';
+
 import 'dart:convert';
-import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import '../../Business_Logic/Exceptions/exception_handlers.dart';
-import 'package:http/http.dart' as http;
 
 class BaseClient {
   static const int timeOutDuration = 35;
@@ -15,14 +15,8 @@ class BaseClient {
       var response =
           await http.get(uri).timeout(const Duration(seconds: timeOutDuration));
       return _processResponse(response);
-    } on SocketException {
-      throw const SocketException('Socket exception');
-    } on TimeoutException {
-      throw ApiNotRespondingException('Server not responding.');
-    } on FormatException {
-    } on HttpException {
     } catch (e) {
-      throw e.toString();
+      throw ExceptionHandlers().getExceptionString(e);
     }
   }
 
@@ -36,11 +30,9 @@ class BaseClient {
           .timeout(const Duration(seconds: timeOutDuration));
 
       return _processResponse(response);
-    } on SocketException {
-    } on TimeoutException {
-      throw ApiNotRespondingException('Server not responding.');
-    } on FormatException {
-    } on HttpException {}
+    } catch (e) {
+      throw ExceptionHandlers().getExceptionString(e);
+    }
   }
 
   //DELETE
@@ -54,13 +46,13 @@ class BaseClient {
         var responseJson = response.body;
         return responseJson;
       case 400: //Bad request
-        throw BadRequestException(response.body);
+        throw BadRequestException(jsonDecode(response.body)['message']);
       case 401: //Unauthorized
-        throw UnAuthorizedException(response.body);
+        throw UnAuthorizedException(jsonDecode(response.body)['message']);
       case 403: //Forbidden
-        throw UnAuthorizedException(response.body);
+        throw UnAuthorizedException(jsonDecode(response.body)['message']);
       case 404: //Resource Not Found
-        throw NotFoundException(response.body);
+        throw NotFoundException(jsonDecode(response.body)['message']);
       case 500: //Internal Server Error
       default:
         throw FetchDataException(

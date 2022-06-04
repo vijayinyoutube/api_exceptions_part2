@@ -10,13 +10,8 @@ abstract class DemoRepository {
 class DemoRepo extends DemoRepository {
   @override
   Future<DemoModel> fetchData() async {
-   try{
-      final response =
+    final response =
         await BaseClient().get('${(dotenv.env['API_BASE_URL'])}/todos/1');
     return DemoModel.fromJson(response);
-   }
-   catch(e){
-     throw e.toString();
-   }
   }
 }

@@ -1,25 +1,26 @@
-import 'package:flutter/material.dart';
-
-import '../../Presentation/Components/snack_bar.dart';
-
-enum ExceptionTypes {
-  socketException,
-  httpException,
-  formatException,
-  timeoutException
-}
+import 'dart:async';
+import 'dart:io';
 
 class ExceptionHandlers {
-  String typeOfException(ExceptionTypes exceptionTypes) {
-    switch (exceptionTypes) {
-      case ExceptionTypes.socketException:
-        return 'No internet connection.';
-      case ExceptionTypes.httpException:
-        return 'HTTP error occured.';
-      case ExceptionTypes.formatException:
-        return 'Invalid data format.';
-      case ExceptionTypes.timeoutException:
-        return 'Request timeout.';
+  getExceptionString(error) {
+    if (error is SocketException) {
+      return 'No internet connection.';
+    } else if (error is HttpException) {
+      return 'HTTP error occured.';
+    } else if (error is FormatException) {
+      return 'Invalid data format.';
+    } else if (error is TimeoutException) {
+      return 'Request timedout.';
+    } else if (error is BadRequestException) {
+      return error.message.toString();
+    } else if (error is UnAuthorizedException) {
+      return error.message.toString();
+    } else if (error is NotFoundException) {
+      return error.message.toString();
+    } else if (error is FetchDataException) {
+      return error.message.toString();
+    } else {
+      return 'Unknown error occured.';
     }
   }
 }
@@ -56,4 +57,3 @@ class NotFoundException extends AppException {
   NotFoundException([String? message, String? url])
       : super(message, 'Page not found', url);
 }
-
