@@ -46,13 +46,13 @@ class BaseClient {
         var responseJson = response.body;
         return responseJson;
       case 400: //Bad request
-        throw BadRequestException(response.body).message.toString();
+        throw BadRequestException(jsonDecode(response.body)['message']);
       case 401: //Unauthorized
-        throw UnAuthorizedException(response.body).message.toString();
+        throw UnAuthorizedException(jsonDecode(response.body)['message']);
       case 403: //Forbidden
-        throw UnAuthorizedException(response.body).message.toString();
+        throw UnAuthorizedException(jsonDecode(response.body)['message']);
       case 404: //Resource Not Found
-        throw NotFoundException(response.body).message.toString();
+        throw NotFoundException(jsonDecode(response.body)['message']);
       case 500: //Internal Server Error
       default:
         throw FetchDataException(

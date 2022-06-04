@@ -11,6 +11,14 @@ class ExceptionHandlers {
       return 'Invalid data format.';
     } else if (error is TimeoutException) {
       return 'Request timedout.';
+    } else if (error is BadRequestException) {
+      return error.message.toString();
+    } else if (error is UnAuthorizedException) {
+      return error.message.toString();
+    } else if (error is NotFoundException) {
+      return error.message.toString();
+    } else if (error is FetchDataException) {
+      return error.message.toString();
     } else {
       return 'Unknown error occured.';
     }
